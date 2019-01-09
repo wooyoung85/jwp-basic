@@ -1,0 +1,35 @@
+package next.support.context;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+
+import core.jdbc.ConnectionManager;
+
+@WebListener
+public class ContextLoadListener implements ServletContextListener {
+	private static final Logger logger = LoggerFactory.getLogger(ContextLoadListener.class);
+
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		// TODO Auto-generated method stub
+		ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+		populator.addScript(new ClassPathResource("jwp.sql"));
+		DatabasePopulatorUtils.execute(populator, ConnectionManager.getDataSource());
+		
+		logger.info("Completed Load ServletContext!");
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
